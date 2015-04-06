@@ -15,11 +15,11 @@ namespace BinarySearchTree
         {
             if (TryGetDefaultComparer())
             {
-                comparer = Comparer<T>.Default;
+                this.comparer = Comparer<T>.Default;
             }
             else
             {
-                string message = String.Format("Type {0} doesn't implements IComparable.{1}For the correct work IComparer<{0}> required. ", 
+                string message = String.Format("Type {0} doesn't implements IComparable.{1}For the correct work IComparer<{0}> required. ",
                     typeof(T), Environment.NewLine);
                 throw new DefaultComparerNotExistsException(message);
             }
@@ -30,7 +30,7 @@ namespace BinarySearchTree
             if (comparer == null)
             {
                 if (TryGetDefaultComparer())
-                    comparer = Comparer<T>.Default;
+                    this.comparer = Comparer<T>.Default;
                 else
                     throw new ArgumentNullException("comparer");
             }
@@ -143,8 +143,7 @@ namespace BinarySearchTree
                 }
                 while (top != null)
                 {
-                    yield
-                        return top.Value;
+                    yield return top.Value;
                     if (top.RightChildNode != null)
                         stack.Push(top.RightChildNode);
                     top = top.LeftChildNode;
