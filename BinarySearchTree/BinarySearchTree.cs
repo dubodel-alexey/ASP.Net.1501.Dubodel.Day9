@@ -11,13 +11,33 @@ namespace BinarySearchTree
         private IComparer<T> comparer;
         private TreeNode rootNode;
 
-        public BinarySearchTree() : this(Comparer<T>.Default) { }
+        public BinarySearchTree()
+        {
+            if (TryGetDefaultComparer())
+            {
+                comparer = Comparer<T>.Default;
+            }
+            else
+            {
+                string message = String.Format("Type {0} doesn't implements IComparable.{1}For the correct work IComparer<{0}> required. ", 
+                    typeof(T), Environment.NewLine);
+                throw new DefaultComparerNotExistsException(message);
+            }
+        }
 
         public BinarySearchTree(IComparer<T> comparer)
         {
             if (comparer == null)
-                throw new ArgumentNullException("comparer");
-            this.comparer = comparer;
+            {
+                if (TryGetDefaultComparer())
+                    comparer = Comparer<T>.Default;
+                else
+                    throw new ArgumentNullException("comparer");
+            }
+            else
+            {
+                this.comparer = comparer;
+            }
         }
 
         public void Add(T value)
@@ -35,7 +55,9 @@ namespace BinarySearchTree
 
             var newNode = new TreeNode(value) { ParentNode = parentNode };
             if (parentNode == null)
+            {
                 rootNode = newNode;
+            }
             else
             {
                 if (comparer.Compare(value, parentNode.Value) < 0)
@@ -47,6 +69,9 @@ namespace BinarySearchTree
 
         public void AddRange(IEnumerable<T> collection)
         {
+            if (collection == null)
+                throw new ArgumentNullException("collection");
+
             foreach (var value in collection)
             {
                 Add(value);
@@ -217,6 +242,12 @@ namespace BinarySearchTree
             while (root.LeftChildNode != null)
                 root = root.LeftChildNode;
             return root;
+        }
+
+        private bool TryGetDefaultComparer()
+        {
+            return (typeof(IComparable)).IsAssignableFrom(typeof(T)) || (typeof(IComparable<T>)).IsAssignableFrom(typeof(T));
+
         }
 
         private class TreeNode

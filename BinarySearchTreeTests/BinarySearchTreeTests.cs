@@ -67,7 +67,7 @@ namespace BinarySearchTreeTests
             CollectionAssert.AreEqual(expected, actual);
         }
 
-        [ExpectedException(typeof(ArgumentException))]
+        [ExpectedException(typeof(DefaultComparerNotExistsException))]
         [TestMethod]
         public void AddPointStructWithoutComparer()
         {
